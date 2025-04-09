@@ -1,0 +1,43 @@
+.utilization input {
+  margin-bottom: 20px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.utilization table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.utilization th, .utilization td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.utilization th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.utilization tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.utilization tr:hover {
+  background-color: #eaeaea;
+}
+
+.utilization .current-week {
+  background-color: #ffeb3b; /* Highlight color for the current week */
+}
+
+.utilization td input {
+  width: 100%;
+  border: none;
+  padding: 4px;
+  box-sizing: border-box;
+}
