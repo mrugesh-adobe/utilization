@@ -74,3 +74,17 @@
 .utilization .red {
   color: red;
 }
+
+.utilization thead tr {
+  position: sticky;
+  top: 0;
+  background: #f8f8f8;
+  z-index: 2;
+}
+
+.utilization thead tr.summary-row {
+  top: 42px; /* height of first header row */
+  background: #e0e0e0;
+  font-weight: bold;
+  z-index: 1;
+}

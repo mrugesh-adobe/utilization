@@ -71,8 +71,8 @@ function decorate(block) {
 
   // Update a specific cell in the table
   function updateCell(weekIndex, key, value) {
-    const tableRows = block.querySelectorAll('tr');
-    const rowCells = tableRows[weekIndex + 1].querySelectorAll('td'); // +1 to skip header row
+    const tableRows = block.querySelectorAll('tbody tr');
+    const rowCells = tableRows[weekIndex].querySelectorAll('td');
     const cellIndex = ['weekNumber', 'weekRange', 'customerFacingTargetPercent', 'customerFacingHours', 'customerFacingTargetAchievementPercent', 'gapToTarget', 'customerFacingHoursTarget', 'availableHours'].indexOf(key);
     rowCells[cellIndex].textContent = value;
 
@@ -85,6 +85,48 @@ function decorate(block) {
       } else {
         achievementCell.classList.add('green');
       }
+    }
+  }
+
+  // Recalculate summary row values
+  function recalculateSummaryRow() {
+    let totalWeeks = 0;
+    let totalHours = 0;
+    let totalTargets = 0;
+    let totalGaps = 0;
+    let totalAvailableHours = 0;
+    let totalAchievementPercent = 0;
+
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      const cfHours = parseFloat(row.querySelector('.cf-hours')?.value || 0);
+      const cfTargetHours = parseFloat(row.querySelector('.cf-target-hours')?.textContent || 0);
+      const availableHours = parseFloat(row.querySelector('.available-hours')?.textContent || 0);
+      const gap = cfHours - cfTargetHours;
+
+      totalWeeks++;
+      totalHours += cfHours;
+      totalTargets += cfTargetHours;
+      totalGaps += gap;
+      totalAvailableHours += availableHours;
+
+      totalAchievementPercent += cfTargetHours > 0 ? (cfHours / cfTargetHours) * 100 : 0;
+    });
+
+    const avgAchievement = totalWeeks > 0 ? Math.round(totalAchievementPercent / totalWeeks) : 0;
+
+    // Update summary row cells
+    const summaryRow = document.querySelector('.summary-row');
+    if (summaryRow) {
+      const summaryCells = summaryRow.querySelectorAll('th');
+      summaryCells[0].textContent = totalWeeks;
+      summaryCells[1].textContent = `${formatDate(startDate)} to ${formatDate(endDate)}`;
+      summaryCells[2].textContent = customerFacingTargetPercent;
+      summaryCells[3].textContent = totalHours;
+      summaryCells[4].textContent = avgAchievement;
+      summaryCells[5].textContent = totalGaps;
+      summaryCells[6].textContent = totalTargets;
+      summaryCells[7].textContent = totalAvailableHours;
     }
   }
 
@@ -116,20 +158,36 @@ function decorate(block) {
       updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
       updateCell(index, 'gapToTarget', week.gapToTarget);
     });
+    recalculateSummaryRow();
   });
 
   // Render table
   function renderTable() {
     const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    
+    // Main header row
     const headerRow = document.createElement('tr');
-
     ['Week Number', 'Week Date Range', 'Customer Facing Target %', 'Customer Facing Hours', 'Customer Facing Target Achievement %', 'Gap to Target', 'Customer Facing Hours Target', 'Available Hours'].forEach(header => {
       const th = document.createElement('th');
       th.textContent = header;
       headerRow.appendChild(th);
     });
 
-    table.appendChild(headerRow);
+    // Summary header row
+    const summaryRow = document.createElement('tr');
+    summaryRow.className = 'summary-row';
+    ['weekNumber', 'weekRange', 'customerFacingTargetPercent', 'customerFacingHours', 'customerFacingTargetAchievementPercent', 'gapToTarget', 'customerFacingHoursTarget', 'availableHours'].forEach(key => {
+      const th = document.createElement('th');
+      th.className = `summary-${key}`;
+      th.textContent = ''; // Initialize with empty text
+      summaryRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    thead.appendChild(summaryRow);
+    table.appendChild(thead);
 
     weeks.forEach((week, index) => {
       const row = document.createElement('tr');
@@ -138,6 +196,7 @@ function decorate(block) {
       }
       ['weekNumber', 'weekRange', 'customerFacingTargetPercent', 'customerFacingHours', 'customerFacingTargetAchievementPercent', 'gapToTarget', 'customerFacingHoursTarget', 'availableHours'].forEach(key => {
         const td = document.createElement('td');
+        td.className = key === 'customerFacingHours' ? 'cf-hours' : key === 'customerFacingHoursTarget' ? 'cf-target-hours' : key === 'availableHours' ? 'available-hours' : '';
         if (key === 'customerFacingHours') {
           const inputHours = document.createElement('input');
           inputHours.type = 'number';
@@ -150,6 +209,7 @@ function decorate(block) {
             week.gapToTarget = week.customerFacingHours - week.customerFacingHoursTarget;
             updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
             updateCell(index, 'gapToTarget', week.gapToTarget);
+            recalculateSummaryRow();
           });
           td.appendChild(inputHours);
         } else if (key === 'customerFacingTargetAchievementPercent') {
@@ -165,9 +225,10 @@ function decorate(block) {
         }
         row.appendChild(td);
       });
-      table.appendChild(row);
+      tbody.appendChild(row);
     });
 
+    table.appendChild(tbody);
     block.innerHTML = '';
     block.appendChild(detailsContainer);
     block.appendChild(inputTargetPercent);
@@ -185,6 +246,8 @@ function decorate(block) {
     });
     holidayListContainer.appendChild(holidayList);
     block.appendChild(holidayListContainer);
+
+    recalculateSummaryRow(); // Initial calculation
   }
 
   renderTable();
