@@ -9,7 +9,7 @@ function decorate(block) {
   const holidays = holidaysStr.split(',').map(dateStr => new Date(dateStr.trim()));
 
   // Initialize Customer Facing Target %
-  let customerFacingTargetPercent = 100;
+  let customerFacingTargetPercent = parseFloat(localStorage.getItem('customerFacingTargetPercent')) || 100;
 
   // Calculate weeks between dates
   const weeks = [];
@@ -35,20 +35,29 @@ function decorate(block) {
 
     const holidayCount = holidays.filter(holiday => holiday >= startOfWeek && holiday <= endOfWeek).length;
 
+    const storedHours = parseFloat(localStorage.getItem(`week-${weekNumber}-customerFacingHours`)) || 0;
+    const storedHoursTarget = 40 - (holidayCount * 8);
+
     weeks.push({
       weekNumber: weekNumber,
       weekRange: `${formatDate(startOfWeek)} to ${formatDate(endOfWeek)}`,
       startOfWeek: startOfWeek,
       endOfWeek: endOfWeek,
-      customerFacingHours: 0, // Editable by user
-      customerFacingHoursTarget: 40 - (holidayCount * 8),
+      customerFacingHours: storedHours, // Load from localStorage
+      customerFacingHoursTarget: storedHoursTarget,
       customerFacingTargetPercent: customerFacingTargetPercent,
-      customerFacingTargetAchievementPercent: 0,
+      customerFacingTargetAchievementPercent: calculateAchievementPercent(storedHours, storedHoursTarget, customerFacingTargetPercent),
       isCurrentWeek: today >= startOfWeek && today <= endOfWeek
     });
 
     weekNumber++;
     currentDate.setDate(currentDate.getDate() + 7);
+  }
+
+  // Calculate Customer Facing Target Achievement %
+  function calculateAchievementPercent(hours, target, percent) {
+    const effectiveTarget = target * (percent / 100);
+    return Math.round((hours / effectiveTarget) * 100);
   }
 
   // Update a specific cell in the table
@@ -59,18 +68,29 @@ function decorate(block) {
     rowCells[cellIndex].textContent = value;
   }
 
+  // Create container for details
+  const detailsContainer = document.createElement('div');
+  detailsContainer.className = 'details-container';
+  detailsContainer.innerHTML = `
+    <p>Quarter Start Date: ${formatDate(startDate)}</p>
+    <p>Quarter End Date: ${formatDate(endDate)}</p>
+    <p>Current Week: ${weeks.find(week => week.isCurrentWeek).weekNumber} : ${formatDate(today)}</p>
+  `;
+
   // Create input element for Customer Facing Target %
   const inputTargetPercent = document.createElement('input');
   inputTargetPercent.type = 'number';
   inputTargetPercent.placeholder = 'Enter Customer Facing Target %';
   inputTargetPercent.value = customerFacingTargetPercent;
+  inputTargetPercent.maxLength = 3; // Set max length
   inputTargetPercent.addEventListener('input', function () {
     customerFacingTargetPercent = parseFloat(this.value) || 100; // Default to 100 if input is invalid
+    localStorage.setItem('customerFacingTargetPercent', customerFacingTargetPercent); // Persist to localStorage
     weeks.forEach((week, index) => {
       week.customerFacingTargetPercent = customerFacingTargetPercent;
-      week.customerFacingTargetAchievementPercent = (week.customerFacingHours / week.customerFacingHoursTarget) * customerFacingTargetPercent;
+      week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.customerFacingHoursTarget, customerFacingTargetPercent);
       updateCell(index, 'customerFacingTargetPercent', week.customerFacingTargetPercent);
-      updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent.toFixed(2));
+      updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
     });
   });
 
@@ -98,10 +118,12 @@ function decorate(block) {
           const inputHours = document.createElement('input');
           inputHours.type = 'number';
           inputHours.value = week[key];
+          inputHours.maxLength = 3; // Set max length
           inputHours.addEventListener('input', function () {
             week.customerFacingHours = parseFloat(this.value) || 0;
-            week.customerFacingTargetAchievementPercent = (week.customerFacingHours / week.customerFacingHoursTarget) * week.customerFacingTargetPercent;
-            updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent.toFixed(2));
+            localStorage.setItem(`week-${week.weekNumber}-customerFacingHours`, week.customerFacingHours); // Persist to localStorage
+            week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.customerFacingHoursTarget, week.customerFacingTargetPercent);
+            updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
           });
           td.appendChild(inputHours);
         } else {
@@ -113,6 +135,7 @@ function decorate(block) {
     });
 
     block.innerHTML = '';
+    block.appendChild(detailsContainer);
     block.appendChild(inputTargetPercent);
     block.appendChild(table);
   }
