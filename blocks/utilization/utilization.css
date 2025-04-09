@@ -45,3 +45,32 @@
   padding: 4px;
   box-sizing: border-box;
 }
+
+.utilization .holiday-list-container {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.utilization .holiday-list-container h3 {
+  margin-bottom: 10px;
+}
+
+.utilization .holiday-list-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.utilization .holiday-list-container ul li {
+  margin-bottom: 5px;
+}
+
+.utilization .green {
+  color: green;
+}
+
+.utilization .red {
+  color: red;
+}

@@ -34,9 +34,11 @@ function decorate(block) {
     }
 
     const holidayCount = holidays.filter(holiday => holiday >= startOfWeek && holiday <= endOfWeek).length;
+    const hoursTarget = 40 - (holidayCount * 8);
 
     const storedHours = parseFloat(localStorage.getItem(`week-${weekNumber}-customerFacingHours`)) || 0;
-    const storedHoursTarget = 40 - (holidayCount * 8);
+    const customerFacingHoursTarget = calculateHoursTarget(hoursTarget, customerFacingTargetPercent);
+    const gapToTarget = storedHours - customerFacingHoursTarget;
 
     weeks.push({
       weekNumber: weekNumber,
@@ -44,14 +46,21 @@ function decorate(block) {
       startOfWeek: startOfWeek,
       endOfWeek: endOfWeek,
       customerFacingHours: storedHours, // Load from localStorage
-      customerFacingHoursTarget: storedHoursTarget,
+      availableHours: hoursTarget,
+      customerFacingHoursTarget: customerFacingHoursTarget,
       customerFacingTargetPercent: customerFacingTargetPercent,
-      customerFacingTargetAchievementPercent: calculateAchievementPercent(storedHours, storedHoursTarget, customerFacingTargetPercent),
+      customerFacingTargetAchievementPercent: calculateAchievementPercent(storedHours, hoursTarget, customerFacingTargetPercent),
+      gapToTarget: gapToTarget,
       isCurrentWeek: today >= startOfWeek && today <= endOfWeek
     });
 
     weekNumber++;
     currentDate.setDate(currentDate.getDate() + 7);
+  }
+
+  // Calculate Customer Facing Hours Target and round to nearest whole number
+  function calculateHoursTarget(availableHours, percent) {
+    return Math.round(availableHours * (percent / 100));
   }
 
   // Calculate Customer Facing Target Achievement %
@@ -64,8 +73,19 @@ function decorate(block) {
   function updateCell(weekIndex, key, value) {
     const tableRows = block.querySelectorAll('tr');
     const rowCells = tableRows[weekIndex + 1].querySelectorAll('td'); // +1 to skip header row
-    const cellIndex = ['weekNumber', 'weekRange', 'customerFacingHours', 'customerFacingHoursTarget', 'customerFacingTargetPercent', 'customerFacingTargetAchievementPercent'].indexOf(key);
+    const cellIndex = ['weekNumber', 'weekRange', 'customerFacingTargetPercent', 'customerFacingHours', 'customerFacingTargetAchievementPercent', 'gapToTarget', 'customerFacingHoursTarget', 'availableHours'].indexOf(key);
     rowCells[cellIndex].textContent = value;
+
+    if (key === 'customerFacingTargetAchievementPercent') {
+      const gap = weeks[weekIndex].gapToTarget; // Ensure gap is calculated first
+      const achievementCell = rowCells[cellIndex];
+      achievementCell.classList.remove('red', 'green');
+      if (gap < 0) {
+        achievementCell.classList.add('red');
+      } else {
+        achievementCell.classList.add('green');
+      }
+    }
   }
 
   // Create container for details
@@ -88,9 +108,13 @@ function decorate(block) {
     localStorage.setItem('customerFacingTargetPercent', customerFacingTargetPercent); // Persist to localStorage
     weeks.forEach((week, index) => {
       week.customerFacingTargetPercent = customerFacingTargetPercent;
-      week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.customerFacingHoursTarget, customerFacingTargetPercent);
+      week.customerFacingHoursTarget = calculateHoursTarget(week.availableHours, customerFacingTargetPercent);
+      week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.availableHours, customerFacingTargetPercent);
+      week.gapToTarget = week.customerFacingHours - week.customerFacingHoursTarget;
       updateCell(index, 'customerFacingTargetPercent', week.customerFacingTargetPercent);
+      updateCell(index, 'customerFacingHoursTarget', week.customerFacingHoursTarget);
       updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
+      updateCell(index, 'gapToTarget', week.gapToTarget);
     });
   });
 
@@ -99,7 +123,7 @@ function decorate(block) {
     const table = document.createElement('table');
     const headerRow = document.createElement('tr');
 
-    ['Week Number', 'Week Date Range', 'Customer Facing Hours', 'Customer Facing Hours Target', 'Customer Facing Target %', 'Customer Facing Target Achievement %'].forEach(header => {
+    ['Week Number', 'Week Date Range', 'Customer Facing Target %', 'Customer Facing Hours', 'Customer Facing Target Achievement %', 'Gap to Target', 'Customer Facing Hours Target', 'Available Hours'].forEach(header => {
       const th = document.createElement('th');
       th.textContent = header;
       headerRow.appendChild(th);
@@ -112,7 +136,7 @@ function decorate(block) {
       if (week.isCurrentWeek) {
         row.classList.add('current-week');
       }
-      ['weekNumber', 'weekRange', 'customerFacingHours', 'customerFacingHoursTarget', 'customerFacingTargetPercent', 'customerFacingTargetAchievementPercent'].forEach(key => {
+      ['weekNumber', 'weekRange', 'customerFacingTargetPercent', 'customerFacingHours', 'customerFacingTargetAchievementPercent', 'gapToTarget', 'customerFacingHoursTarget', 'availableHours'].forEach(key => {
         const td = document.createElement('td');
         if (key === 'customerFacingHours') {
           const inputHours = document.createElement('input');
@@ -122,10 +146,20 @@ function decorate(block) {
           inputHours.addEventListener('input', function () {
             week.customerFacingHours = parseFloat(this.value) || 0;
             localStorage.setItem(`week-${week.weekNumber}-customerFacingHours`, week.customerFacingHours); // Persist to localStorage
-            week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.customerFacingHoursTarget, week.customerFacingTargetPercent);
+            week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.availableHours, week.customerFacingTargetPercent);
+            week.gapToTarget = week.customerFacingHours - week.customerFacingHoursTarget;
             updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
+            updateCell(index, 'gapToTarget', week.gapToTarget);
           });
           td.appendChild(inputHours);
+        } else if (key === 'customerFacingTargetAchievementPercent') {
+          td.textContent = week[key];
+          td.classList.remove('red', 'green');
+          if (week.gapToTarget < 0) {
+            td.classList.add('red');
+          } else {
+            td.classList.add('green');
+          }
         } else {
           td.textContent = week[key];
         }
@@ -138,6 +172,19 @@ function decorate(block) {
     block.appendChild(detailsContainer);
     block.appendChild(inputTargetPercent);
     block.appendChild(table);
+
+    // Create and append holiday list
+    const holidayListContainer = document.createElement('div');
+    holidayListContainer.className = 'holiday-list-container';
+    holidayListContainer.innerHTML = '<h3>List of Holidays:</h3>';
+    const holidayList = document.createElement('ul');
+    holidays.forEach(holiday => {
+      const listItem = document.createElement('li');
+      listItem.textContent = formatDate(holiday);
+      holidayList.appendChild(listItem);
+    });
+    holidayListContainer.appendChild(holidayList);
+    block.appendChild(holidayListContainer);
   }
 
   renderTable();
