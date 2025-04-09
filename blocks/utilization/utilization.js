@@ -96,40 +96,40 @@ function decorate(block) {
     let totalGaps = 0;
     let totalAvailableHours = 0;
     let totalAchievementPercent = 0;
-
+  
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
-      const cfHours = parseFloat(row.querySelector('.cf-hours')?.value || 0);
+      const cfHours = parseFloat(row.querySelector('.cf-hours input')?.value || 0);
       const cfTargetHours = parseFloat(row.querySelector('.cf-target-hours')?.textContent || 0);
       const availableHours = parseFloat(row.querySelector('.available-hours')?.textContent || 0);
       const gap = cfHours - cfTargetHours;
-
+  
       totalWeeks++;
       totalHours += cfHours;
       totalTargets += cfTargetHours;
       totalGaps += gap;
       totalAvailableHours += availableHours;
-
+  
       totalAchievementPercent += cfTargetHours > 0 ? (cfHours / cfTargetHours) * 100 : 0;
     });
-
+  
     const avgAchievement = totalWeeks > 0 ? Math.round(totalAchievementPercent / totalWeeks) : 0;
-
-    // Update summary row cells
+  
+    // Update summary row cells by their class name
     const summaryRow = document.querySelector('.summary-row');
     if (summaryRow) {
-      const summaryCells = summaryRow.querySelectorAll('th');
-      summaryCells[0].textContent = totalWeeks;
-      summaryCells[1].textContent = `${formatDate(startDate)} to ${formatDate(endDate)}`;
-      summaryCells[2].textContent = customerFacingTargetPercent;
-      summaryCells[3].textContent = totalHours;
-      summaryCells[4].textContent = avgAchievement;
-      summaryCells[5].textContent = totalGaps;
-      summaryCells[6].textContent = totalTargets;
-      summaryCells[7].textContent = totalAvailableHours;
+      summaryRow.querySelector('.summary-weekNumber').textContent = totalWeeks;
+      summaryRow.querySelector('.summary-weekRange').textContent = `${formatDate(startDate)} to ${formatDate(endDate)}`;
+      summaryRow.querySelector('.summary-customerFacingTargetPercent').textContent = customerFacingTargetPercent;
+      summaryRow.querySelector('.summary-customerFacingHours').textContent = totalHours;
+      summaryRow.querySelector('.summary-customerFacingTargetAchievementPercent').textContent = avgAchievement;
+      summaryRow.querySelector('.summary-gapToTarget').textContent = totalGaps;
+      summaryRow.querySelector('.summary-customerFacingHoursTarget').textContent = totalTargets;
+      summaryRow.querySelector('.summary-availableHours').textContent = totalAvailableHours;
     }
   }
-
+  
+  
   // Create container for details
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
