@@ -127,15 +127,29 @@ function decorate(block) {
       summaryRow.querySelector('.summary-customerFacingHoursTarget').textContent = totalTargets;
       summaryRow.querySelector('.summary-availableHours').textContent = totalAvailableHours;
     }
+
+    // Calculate the average Customer Facing Target Achievement % up to the current week
+    const totalAchievementPercent = weeks.reduce((acc, week) => {
+      if (week.isCurrentWeek) return acc; // Exclude current week from calculation
+      return acc + week.customerFacingTargetAchievementPercent;
+    }, 0);
+    const averageAchievementPercent = totalAchievementPercent / (currentWeekNumber - 1); // Exclude current week
+    
+    // Update summary section for To Date Target Achievement
+    const summarySection = document.querySelector('.summary-target-achievement');
+    if (summarySection) {
+      summarySection.querySelector('.summary-achievement-value').textContent = Math.round(averageAchievementPercent) + '%';
+    }
   }
   
   // Create container for details
+  const currentWeekNumber = weeks.find(week => week.isCurrentWeek).weekNumber;
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
     <p>Quarter Start Date: ${formatDate(startDate)}</p>
     <p>Quarter End Date: ${formatDate(endDate)}</p>
-    <p>Current Week: ${weeks.find(week => week.isCurrentWeek).weekNumber} : ${formatDate(today)}</p>
+    <p>Current Week: ${currentWeekNumber} : ${formatDate(today)}</p>
   `;
 
   // Create input element for Customer Facing Target %
@@ -231,6 +245,16 @@ function decorate(block) {
     block.innerHTML = '';
     block.appendChild(detailsContainer);
     block.appendChild(inputTargetPercent);
+
+    // Create summary section for To Date Target Achievement
+    const summarySection = document.createElement('div');
+    summarySection.className = 'summary-target-achievement';
+    summarySection.innerHTML = `
+      <h4>To Date Target Achievement:</h4>
+      <p class="summary-achievement-value">0%</p>
+    `;
+    block.appendChild(summarySection);
+
     block.appendChild(table);
 
     // Create and append holiday list
