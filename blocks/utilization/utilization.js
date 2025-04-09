@@ -128,17 +128,29 @@ function decorate(block) {
       summaryRow.querySelector('.summary-availableHours').textContent = totalAvailableHours;
     }
 
-    // Calculate the average Customer Facing Target Achievement % up to the current week
+    // Calculate the average Customer Facing Target Achievement % and total Gap to Target up to the current week
     const totalAchievementPercent = weeks.reduce((acc, week) => {
       if (week.isCurrentWeek) return acc; // Exclude current week from calculation
       return acc + week.customerFacingTargetAchievementPercent;
     }, 0);
     const averageAchievementPercent = totalAchievementPercent / (currentWeekNumber - 1); // Exclude current week
-    
+    console.log(weeks);
+    // Calculate total Gap to Target utilization
+    let totalGapUtilization = 0;
+    for (const week of weeks) {
+      if (week.isCurrentWeek) break; // Stop summing when current week is reached
+      totalGapUtilization += week.gapToTarget;
+    }
+
+    // Calculate weeks left in the quarter
+    const weeksLeftInQuarter = weeks.length - currentWeekNumber + 1;
+
     // Update summary section for To Date Target Achievement
     const summarySection = document.querySelector('.summary-target-achievement');
     if (summarySection) {
       summarySection.querySelector('.summary-achievement-value').textContent = Math.round(averageAchievementPercent) + '%';
+      summarySection.querySelector('.summary-gap-value').textContent = totalGapUtilization;
+      summarySection.querySelector('.summary-weeks-left-value').textContent = weeksLeftInQuarter;
     }
   }
   
@@ -246,12 +258,16 @@ function decorate(block) {
     block.appendChild(detailsContainer);
     block.appendChild(inputTargetPercent);
 
-    // Create summary section for To Date Target Achievement
+    // Create summary section for To Date Target Achievement and Gap Utilization
     const summarySection = document.createElement('div');
     summarySection.className = 'summary-target-achievement';
     summarySection.innerHTML = `
       <h4>To Date Target Achievement:</h4>
       <p class="summary-achievement-value">0%</p>
+      <h4>To Date Gap Utilization:</h4>
+      <p class="summary-gap-value">0</p>
+      <h4>Weeks Left in Quarter:</h4>
+      <p class="summary-weeks-left-value">0</p>
     `;
     block.appendChild(summarySection);
 
