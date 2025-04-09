@@ -95,7 +95,6 @@ function decorate(block) {
     let totalTargets = 0;
     let totalGaps = 0;
     let totalAvailableHours = 0;
-    let totalAchievementPercent = 0;
   
     const rows = document.querySelectorAll('tbody tr');
     rows.forEach(row => {
@@ -109,26 +108,26 @@ function decorate(block) {
       totalTargets += cfTargetHours;
       totalGaps += gap;
       totalAvailableHours += availableHours;
-  
-      totalAchievementPercent += cfTargetHours > 0 ? (cfHours / cfTargetHours) * 100 : 0;
     });
   
-    const avgAchievement = totalWeeks > 0 ? Math.round(totalAchievementPercent / totalWeeks) : 0;
+    // Correctly calculate summary achievement %
+    const achievementPercent = totalTargets > 0
+      ? Math.round((totalHours / totalTargets) * 100)
+      : 0;
   
-    // Update summary row cells by their class name
+    // Update summary row cells by class name
     const summaryRow = document.querySelector('.summary-row');
     if (summaryRow) {
       summaryRow.querySelector('.summary-weekNumber').textContent = totalWeeks;
       summaryRow.querySelector('.summary-weekRange').textContent = `${formatDate(startDate)} to ${formatDate(endDate)}`;
       summaryRow.querySelector('.summary-customerFacingTargetPercent').textContent = customerFacingTargetPercent;
       summaryRow.querySelector('.summary-customerFacingHours').textContent = totalHours;
-      summaryRow.querySelector('.summary-customerFacingTargetAchievementPercent').textContent = avgAchievement;
+      summaryRow.querySelector('.summary-customerFacingTargetAchievementPercent').textContent = achievementPercent;
       summaryRow.querySelector('.summary-gapToTarget').textContent = totalGaps;
       summaryRow.querySelector('.summary-customerFacingHoursTarget').textContent = totalTargets;
       summaryRow.querySelector('.summary-availableHours').textContent = totalAvailableHours;
     }
   }
-  
   
   // Create container for details
   const detailsContainer = document.createElement('div');
