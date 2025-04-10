@@ -3,7 +3,6 @@
 }
 
 .utilization input {
-  margin-bottom: 20px;
   padding: 8px;
   width: 100%;
   box-sizing: border-box;
@@ -14,7 +13,6 @@
 .utilization table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 25px;
 }
 
 .utilization th, .utilization td {
@@ -114,7 +112,6 @@
 }
 
 .utilization .input-wrapper {
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   max-width: 250px;
@@ -179,4 +176,72 @@
 
 .utilization .red {
   color: red;
+}
+
+.utilization.block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Make the two blocks side-by-side */
+.utilization .details-container,
+.utilization .summary-target-achievement {
+  flex: 1 1 48%;
+  box-sizing: border-box;
+}
+
+.utilization .summary-target-achievement {
+  background-color: #f7f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 5px solid #2196f3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+}
+
+.utilization .summary-target-achievement h4,
+.utilization .summary-target-achievement p {
+  margin: 0;
+}
+
+.utilization .summary-target-achievement h4 {
+  display: inline-block;
+  width: 75%;
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.utilization .summary-target-achievement p {
+  display: inline-block;
+  width: 23%;
+  text-align: right;
+  font-weight: 700;
+  color: #1e88e5;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 480px) {
+  .utilization .summary-target-achievement h4,
+  .utilization .summary-target-achievement p {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  .utilization .summary-target-achievement p {
+    margin-bottom: 16px;
+  }
+}
+
+/* Responsive stacking on smaller screens */
+@media (max-width: 768px) {
+  .utilization .details-container,
+  .utilization .summary-target-achievement {
+    flex: 1 1 100%;
+  }
 }

@@ -267,11 +267,7 @@ function decorate(block) {
 
     table.appendChild(tbody);
     block.innerHTML = '';
-    block.appendChild(detailsContainer);
-    block.appendChild(label);
-    block.appendChild(inputTargetPercent);
-    block.appendChild(inputTargetPercent);
-
+    
     // Create summary section for To Date Target Achievement and Gap Utilization
     const summarySection = document.createElement('div');
     summarySection.className = 'summary-target-achievement';
@@ -284,6 +280,9 @@ function decorate(block) {
       <p class="summary-weeks-left-value">0</p>
     `;
     block.appendChild(summarySection);
+    block.appendChild(detailsContainer);
+    block.appendChild(label);
+    block.appendChild(inputTargetPercent);
 
     block.appendChild(table);
 
