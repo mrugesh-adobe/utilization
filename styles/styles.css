@@ -230,7 +230,7 @@ main img {
 
 /* sections */
 main > .section {
-  margin: 40px 0;
+  margin: 0 auto;
   padding: 15px;
   max-width: 1200px;
 }
