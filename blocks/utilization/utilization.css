@@ -1,10 +1,11 @@
 .utilization input {
-  padding: 8px;
+  padding: 5px;
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #dee2e6;
   border-radius: 4px;
   transition: border-color 0.3s, box-shadow 0.3s;
+  width: 80px;
 }
 
 .utilization input:focus {
@@ -21,7 +22,7 @@
 
 .utilization th, .utilization td {
   border: 1px solid #dee2e6;
-  padding: 8px;
+  padding: 5px;
   text-align: left;
 }
 
@@ -189,6 +190,38 @@
   font-weight: 700;
   color: #1e88e5;
   margin-bottom: 8px;
+}
+
+th:nth-child(1), td:nth-child(1) { /* Week Number */
+  width: 80px;
+}
+
+th:nth-child(2), td:nth-child(2) { /* Week Date Range */
+  width: 180px;
+}
+
+th:nth-child(3), td:nth-child(3) { /* Customer Facing Target % */
+  width: 140px;
+}
+
+th:nth-child(4), td:nth-child(4) { /* Customer Facing Hours */
+  width: 150px;
+}
+
+th:nth-child(5), td:nth-child(5) { /* Achievement % */
+  width: 160px;
+}
+
+th:nth-child(6), td:nth-child(6) { /* Gap to Target */
+  width: 110px;
+}
+
+th:nth-child(7), td:nth-child(7) { /* Target Hours */
+  width: 170px;
+}
+
+th:nth-child(8), td:nth-child(8) { /* Available Hours */
+  width: 130px;
 }
 
 @media (max-width: 480px) {
