@@ -159,17 +159,29 @@ function decorate(block) {
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
-    <p>Quarter Start Date: ${formatDate(startDate)}</p>
-    <p>Quarter End Date: ${formatDate(endDate)}</p>
-    <p>Current Week: ${currentWeekNumber} : ${formatDate(today)}</p>
+    <p>📅 <strong>Quarter Start Date: ${formatDate(startDate)}</strong></p>
+    <p>📅 <strong>Quarter End Date: ${formatDate(endDate)}</strong></p>
+    <p class="current-week">🗓️ <strong>Current Week:</strong> ${currentWeekNumber} : ${formatDate(today)}</p>
   `;
 
   // Create input element for Customer Facing Target %
+  const inputWrapper = document.createElement('div');
+  inputWrapper.className = 'input-wrapper';
+
+  // Create label
+  const label = document.createElement('label');
+  label.htmlFor = 'cf-target';
+  label.textContent = '🎯 Customer Facing Target %';
+
+  // Create input field
   const inputTargetPercent = document.createElement('input');
   inputTargetPercent.type = 'number';
-  inputTargetPercent.placeholder = 'Enter Customer Facing Target %';
-  inputTargetPercent.value = customerFacingTargetPercent;
-  inputTargetPercent.maxLength = 3; // Set max length
+  inputTargetPercent.id = 'cf-target';
+  inputTargetPercent.placeholder = 'Enter %';
+  inputTargetPercent.value = customerFacingTargetPercent || '';
+  inputTargetPercent.maxLength = 3; // Not strictly valid for type="number", use pattern or validation if needed
+  inputTargetPercent.style.width = '100px'; // Just to enforce inline if needed
+
   inputTargetPercent.addEventListener('input', function () {
     customerFacingTargetPercent = parseFloat(this.value) || 100; // Default to 100 if input is invalid
     localStorage.setItem('customerFacingTargetPercent', customerFacingTargetPercent); // Persist to localStorage
@@ -256,17 +268,19 @@ function decorate(block) {
     table.appendChild(tbody);
     block.innerHTML = '';
     block.appendChild(detailsContainer);
+    block.appendChild(label);
+    block.appendChild(inputTargetPercent);
     block.appendChild(inputTargetPercent);
 
     // Create summary section for To Date Target Achievement and Gap Utilization
     const summarySection = document.createElement('div');
     summarySection.className = 'summary-target-achievement';
     summarySection.innerHTML = `
-      <h4>To Date Target Achievement:</h4>
+      <h4>📈 To Date Target Achievement:</h4>
       <p class="summary-achievement-value">0%</p>
-      <h4>To Date Gap Utilization:</h4>
+      <h4>📊 To Date Gap Utilization:</h4>
       <p class="summary-gap-value">0</p>
-      <h4>Weeks Left in Quarter:</h4>
+      <h4>📅 Weeks Left in Quarter:</h4>
       <p class="summary-weeks-left-value">0</p>
     `;
     block.appendChild(summarySection);
