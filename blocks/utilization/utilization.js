@@ -149,7 +149,7 @@ function decorate(block) {
     const summarySection = document.querySelector('.summary-target-achievement');
     if (summarySection) {
       summarySection.querySelector('.summary-achievement-value').textContent = Math.round(averageAchievementPercent) + '%';
-      summarySection.querySelector('.summary-gap-value').textContent = totalGapUtilization;
+      summarySection.querySelector('.summary-gap-value').textContent = totalGapUtilization + ' Hours';
       summarySection.querySelector('.summary-weeks-left-value').textContent = weeksLeftInQuarter;
     }
   }
@@ -159,9 +159,9 @@ function decorate(block) {
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
-    <p>📅 <strong>Quarter Start Date: ${formatDate(startDate)}</strong></p>
-    <p>📅 <strong>Quarter End Date: ${formatDate(endDate)}</strong></p>
-    <p class="current-week">🗓️ <strong>Current Week:</strong> ${currentWeekNumber} : ${formatDate(today)}</p>
+    <h5>📅 Quarter Start Date: </h4><p></strong> ${formatDate(startDate)}</strong></p>
+    <h5>📅 Quarter End Date: </h4><p></strong> ${formatDate(endDate)}</strong></p>
+    <h5>🗓️ Current Week: </h4><p class="current-week"><strong> ${currentWeekNumber} : ${formatDate(today)}</strong></p>
   `;
 
   // Create input element for Customer Facing Target %
@@ -181,6 +181,9 @@ function decorate(block) {
   inputTargetPercent.value = customerFacingTargetPercent || '';
   inputTargetPercent.maxLength = 3; // Not strictly valid for type="number", use pattern or validation if needed
   inputTargetPercent.style.width = '100px'; // Just to enforce inline if needed
+
+  inputWrapper.appendChild(label);
+  inputWrapper.appendChild(inputTargetPercent);
 
   inputTargetPercent.addEventListener('input', function () {
     customerFacingTargetPercent = parseFloat(this.value) || 100; // Default to 100 if input is invalid
@@ -272,18 +275,16 @@ function decorate(block) {
     const summarySection = document.createElement('div');
     summarySection.className = 'summary-target-achievement';
     summarySection.innerHTML = `
-      <h4>📈 To Date Target Achievement:</h4>
+      <h5>📈 To Date Target Achievement:</h4>
       <p class="summary-achievement-value">0%</p>
-      <h4>📊 To Date Gap Utilization:</h4>
-      <p class="summary-gap-value">0</p>
-      <h4>📅 Weeks Left in Quarter:</h4>
+      <h5>📊 To Date Gap Utilization:</h4>
+      <p class="summary-gap-value">0 Hours</p>
+      <h5>📅 Weeks Left in Quarter:</h4>
       <p class="summary-weeks-left-value">0</p>
     `;
     block.appendChild(summarySection);
     block.appendChild(detailsContainer);
-    block.appendChild(label);
-    block.appendChild(inputTargetPercent);
-
+    block.appendChild(inputWrapper);
     block.appendChild(table);
 
     // Create and append holiday list

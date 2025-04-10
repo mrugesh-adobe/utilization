@@ -1,13 +1,16 @@
-.utilization .details-container {
-  margin-bottom: 20px;
-}
-
 .utilization input {
   padding: 8px;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #ddd;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.utilization input:focus {
+  border-color: #86b7fe;
+  outline: none;
+  box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
 }
 
 .utilization table {
@@ -16,7 +19,7 @@
 }
 
 .utilization th, .utilization td {
-  border: 1px solid #ddd;
+  border: 1px solid #dee2e6;
   padding: 8px;
   text-align: left;
 }
@@ -35,21 +38,14 @@
 }
 
 .utilization .current-week {
-  background-color: #ffeb3b; /* Highlight color for the current week */
-}
-
-.utilization td input {
-  width: 100%;
-  border: none;
-  padding: 4px;
-  box-sizing: border-box;
+  background-color: #cfe2ff; /* Highlight color for the current week */
 }
 
 .utilization .holiday-list-container {
   margin-top: 20px;
   padding: 10px;
   background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
 }
 
@@ -67,11 +63,11 @@
 }
 
 .utilization .green {
-  color: green;
+  background-color: #d1e7dd;
 }
 
 .utilization .red {
-  color: red;
+  background-color: #f8d7da;
 }
 
 .utilization thead tr {
@@ -89,7 +85,6 @@
 }
 
 .utilization .details-container {
-  margin-bottom: 20px;
   background-color: #fefefe;
   padding: 15px;
   border-left: 5px solid #4caf50;
@@ -100,43 +95,44 @@
 
 .utilization .details-container p {
   margin: 5px 0;
-  font-size: 15px;
   color: #444;
 }
 
 .utilization .details-container .current-week {
-  background-color: #fff9c4;
-  padding: 8px;
+  background-color: #cfe2ff;
   border-radius: 6px;
   font-weight: bold;
 }
 
 .utilization .input-wrapper {
   display: flex;
-  flex-direction: column;
-  max-width: 250px;
+  align-items: center;
 }
 
 .utilization .input-wrapper label {
-  margin-bottom: 6px;
   font-weight: 500;
-  font-size: 14px;
   color: #333;
+  margin-right: 10px;
 }
 
 .utilization .input-wrapper input {
-  padding: 10px;
   width: 100px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.utilization .input-wrapper input:focus {
-  border-color: #4caf50;
-  outline: none;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+.utilization .summary-achievement-value {
+  font-weight: bold;
+}
+
+.utilization .summary-gap-value,
+.utilization .summary-weeks-left-value {
+  font-weight: 500;
+}
+
+.utilization.block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .utilization .summary-target-achievement {
@@ -145,44 +141,6 @@
   border-radius: 10px;
   border-left: 5px solid #2196f3;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.utilization .summary-target-achievement h4 {
-  margin: 10px 0 4px;
-  color: #333;
-  font-weight: 600;
-}
-
-.utilization .summary-target-achievement p {
-  font-size: 16px;
-  margin-bottom: 12px;
-  color: #555;
-}
-
-.utilization .summary-achievement-value {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.utilization .summary-gap-value,
-.utilization .summary-weeks-left-value {
-  font-weight: 500;
-  font-size: 16px;
-}
-
-.utilization .green {
-  color: green;
-}
-
-.utilization .red {
-  color: red;
-}
-
-.utilization.block {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 20px;
 }
 
 /* Make the two blocks side-by-side */
@@ -194,47 +152,47 @@
 
 .utilization .summary-target-achievement {
   background-color: #f7f9f9;
-  padding: 20px;
+  padding: 15px;
   border-radius: 10px;
   border-left: 5px solid #2196f3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   max-width: 600px;
 }
 
-.utilization .summary-target-achievement h4,
-.utilization .summary-target-achievement p {
+.utilization .summary-target-achievement h5,
+.utilization .summary-target-achievement p,
+.utilization .details-container h5,
+.utilization .details-container p {
   margin: 0;
 }
 
-.utilization .summary-target-achievement h4 {
+.utilization .summary-target-achievement h5,
+.utilization .details-container h5 {
   display: inline-block;
   width: 75%;
   font-weight: 600;
-  font-size: 16px;
   color: #333;
   margin-bottom: 8px;
 }
 
-.utilization .summary-target-achievement p {
+.utilization .summary-target-achievement p,
+.utilization .details-container p {
   display: inline-block;
   width: 23%;
   text-align: right;
   font-weight: 700;
   color: #1e88e5;
-  font-size: 17px;
   margin-bottom: 8px;
 }
 
 @media (max-width: 480px) {
-  .utilization .summary-target-achievement h4,
-  .utilization .summary-target-achievement p {
+  .utilization .summary-target-achievement h5,
+  .utilization .summary-target-achievement p,
+  .utilization .details-container h5,
+  .utilization .details-container p {
     display: block;
     width: 100%;
     text-align: left;
-  }
-
-  .utilization .summary-target-achievement p {
-    margin-bottom: 16px;
   }
 }
 
