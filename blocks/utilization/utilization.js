@@ -9,7 +9,7 @@ function decorate(block) {
   const holidays = holidaysStr.split(',').map(dateStr => new Date(dateStr.trim()));
 
   // Initialize Customer Facing Target %
-  let customerFacingTargetPercent = parseFloat(localStorage.getItem('customerFacingTargetPercent')) || 100;
+  let customerFacingTargetPercent = parseFloat(localStorage.getItem('customerFacingTargetPercent')) || 87;
 
   // Calculate weeks between dates
   const weeks = [];
@@ -198,7 +198,7 @@ function decorate(block) {
   inputWrapper.appendChild(inputTargetPercent);
 
   inputTargetPercent.addEventListener('input', function () {
-    customerFacingTargetPercent = parseFloat(this.value) || 100; // Default to 100 if input is invalid
+    customerFacingTargetPercent = parseFloat(this.value) || 87; // Default to 87 if input is invalid
     localStorage.setItem('customerFacingTargetPercent', customerFacingTargetPercent); // Persist to localStorage
     weeks.forEach((week, index) => {
       week.customerFacingTargetPercent = customerFacingTargetPercent;
