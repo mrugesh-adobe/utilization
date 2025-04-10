@@ -24,6 +24,18 @@ function decorate(block) {
     return `${day}-${month}-${year}`;
   }
 
+  function formatToDate(date) {
+    // const day = String(date.getDate()).padStart(2, '0');
+    // const month = String(date.getMonth() + 1).padStart(2, '0');
+    // const year = date.getFullYear();
+    // return `${day}-${month}-${year}`;
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[date.getMonth()];
+    return `${day} ${month}`;
+  }
+
   while (currentDate <= endDate) {
     const startOfWeek = new Date(currentDate);
     const endOfWeek = new Date(currentDate);
@@ -42,7 +54,7 @@ function decorate(block) {
 
     weeks.push({
       weekNumber: weekNumber,
-      weekRange: `${formatDate(startOfWeek)} to ${formatDate(endOfWeek)}`,
+      weekRange: `${formatToDate(startOfWeek)} to ${formatToDate(endOfWeek)}`,
       startOfWeek: startOfWeek,
       endOfWeek: endOfWeek,
       customerFacingHours: storedHours, // Load from localStorage
@@ -119,7 +131,7 @@ function decorate(block) {
     const summaryRow = document.querySelector('.summary-row');
     if (summaryRow) {
       summaryRow.querySelector('.summary-weekNumber').textContent = totalWeeks;
-      summaryRow.querySelector('.summary-weekRange').textContent = `${formatDate(startDate)} to ${formatDate(endDate)}`;
+      summaryRow.querySelector('.summary-weekRange').textContent = `${formatToDate(startDate)} to ${formatToDate(endDate)}`;
       summaryRow.querySelector('.summary-customerFacingTargetPercent').textContent = customerFacingTargetPercent;
       summaryRow.querySelector('.summary-customerFacingHours').textContent = totalHours;
       summaryRow.querySelector('.summary-customerFacingTargetAchievementPercent').textContent = achievementPercent;
@@ -209,7 +221,7 @@ function decorate(block) {
     
     // Main header row
     const headerRow = document.createElement('tr');
-    ['Week Number', 'Week Date Range', 'Customer Facing Target %', 'Customer Facing Hours', 'Customer Facing Target Achievement %', 'Gap to Target', 'Customer Facing Hours Target', 'Available Hours'].forEach(header => {
+    ['Week Number', 'Week Date Range', 'Customer Facing Target %', 'Customer Facing Hours', 'Customer Facing Achievement %', 'Gap to Target', 'Customer Facing Hours Target', 'Available Hours'].forEach(header => {
       const th = document.createElement('th');
       th.textContent = header;
       headerRow.appendChild(th);

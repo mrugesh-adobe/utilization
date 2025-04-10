@@ -16,6 +16,7 @@
 .utilization table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 14px;
 }
 
 .utilization th, .utilization td {
@@ -26,6 +27,11 @@
 
 .utilization th {
   background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.utilization .summary-row th {
+  background-color: #cff4fc;
   font-weight: bold;
 }
 
