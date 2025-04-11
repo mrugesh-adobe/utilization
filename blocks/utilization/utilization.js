@@ -38,12 +38,21 @@ function decorate(block) {
 
   while (currentDate <= endDate) {
     const startOfWeek = new Date(currentDate);
-    const endOfWeek = new Date(currentDate);
+    startOfWeek.setHours(0, 0, 0, 0); // Normalize
+
+    const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(endOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999); // Normalize to end of day
 
     if (endOfWeek > endDate) {
-      endOfWeek.setDate(endDate.getDate());
+      endOfWeek.setTime(endDate.getTime());
+      endOfWeek.setHours(23, 59, 59, 999); // Also normalize
     }
+
+    const todayNormalized = new Date();
+    todayNormalized.setHours(0, 0, 0, 0); // Only compare date
+
+    const isCurrentWeek = todayNormalized >= startOfWeek && todayNormalized <= endOfWeek;
 
     const holidayCount = holidays.filter(holiday => holiday >= startOfWeek && holiday <= endOfWeek).length;
     const hoursTarget = 40 - (holidayCount * 8);
@@ -63,7 +72,7 @@ function decorate(block) {
       customerFacingTargetPercent: customerFacingTargetPercent,
       customerFacingTargetAchievementPercent: calculateAchievementPercent(storedHours, hoursTarget, customerFacingTargetPercent),
       gapToTarget: gapToTarget,
-      isCurrentWeek: today >= startOfWeek && today <= endOfWeek
+      isCurrentWeek: isCurrentWeek,
     });
 
     weekNumber++;
@@ -167,7 +176,8 @@ function decorate(block) {
   }
   
   // Create container for details
-  const currentWeekNumber = weeks.find(week => week.isCurrentWeek).weekNumber;
+  const currentWeek = weeks.find(week => week.isCurrentWeek);
+  const currentWeekNumber = currentWeek ? currentWeek.weekNumber : weeks.length; // Fallback to last week if not found
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
