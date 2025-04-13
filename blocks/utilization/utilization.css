@@ -100,6 +100,10 @@
   line-height: 1.6;
 }
 
+.utilization h4 {
+  margin-top: 0;
+}
+
 .utilization .details-container p {
   margin: 5px 0;
   color: #444;
@@ -179,7 +183,7 @@
   width: 75%;
   font-weight: 600;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .utilization .summary-target-achievement p,
@@ -189,7 +193,7 @@
   text-align: right;
   font-weight: 700;
   color: #1e88e5;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 th:nth-child(1), td:nth-child(1) { /* Week Number */

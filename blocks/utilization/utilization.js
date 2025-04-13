@@ -171,9 +171,24 @@ function decorate(block) {
     // Update summary section for To Date Target Achievement
     const summarySection = document.querySelector('.summary-target-achievement');
     if (summarySection) {
-      summarySection.querySelector('.summary-achievement-value').textContent = Math.round(averageAchievementPercent) + '%';
-      summarySection.querySelector('.summary-gap-value').textContent = totalGapUtilization + ' Hours';
-      summarySection.querySelector('.summary-weeks-left-value').textContent = weeksLeftInQuarter;
+      const toDateStart = formatToDate(startDate); // Start of the date range
+      console.log(currentWeek.startOfWeek)
+      const toDateEnd = formatToDate(currentWeek ? currentWeek.endOfWeek : today); // End of the date range (current week or today)
+      // currentWeek.startOfWeek - 1 day i need
+      const previousDate = new Date(currentWeek.startOfWeek);
+      previousDate.setDate(previousDate.getDate() - 1); // Subtract 1 day
+      const previousDateStr = formatToDate(previousDate); // Format the date
+      summarySection.innerHTML = `
+        <h4>Progress Summary</h4>
+        <h5>📅 To Date:</h5><p><strong>${toDateStart} → ${previousDateStr}</strong></p>
+        <h5>📈 To Date Target Achievement:</h5>
+        <p class="summary-achievement-value">${Math.round(averageAchievementPercent)}%</p>
+        
+        <h5>⏳ To Date Gap Utilization:</h5>
+        <p class="summary-gap-value">${totalGapUtilization} Hours</p>
+        <h5>📊 Weeks Left in Quarter:</h5>
+        <p class="summary-weeks-left-value">${weeksLeftInQuarter}</p>
+      `;
     }
   }
   
@@ -183,10 +198,11 @@ function decorate(block) {
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
+  <h4>Qaurter Details</h4>
     <h5>📅 Quarter Start Date: </h5><p></strong> ${formatDate(startDate)}</strong></p>
     <h5>📅 Quarter End Date: </h5><p></strong> ${formatDate(endDate)}</strong></p>
-    <h5>📅 Current Week: </h5><p></strong> ${currentWeekNumber}</strong></p>
-    <h5>🗓️ Today's Date: </h5><p><strong>${formatDate(today)}</strong></p>
+    <h5>🔢 Current Week: </h5><p></strong> ${currentWeekNumber} </strong></p>
+    <h5>📍 Today's Date: </h5><p><strong>${formatDate(today)}</strong></p>
   `;
 
   // Create input element for Customer Facing Target %
