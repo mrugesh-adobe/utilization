@@ -44,7 +44,7 @@
   background-color: #eaeaea;
 }
 
-.utilization .current-week {
+.utilization tr.current-week {
   background-color: #cfe2ff; /* Highlight color for the current week */
 }
 

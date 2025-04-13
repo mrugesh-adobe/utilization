@@ -25,10 +25,6 @@ function decorate(block) {
   }
 
   function formatToDate(date) {
-    // const day = String(date.getDate()).padStart(2, '0');
-    // const month = String(date.getMonth() + 1).padStart(2, '0');
-    // const year = date.getFullYear();
-    // return `${day}-${month}-${year}`;
     const day = String(date.getDate()).padStart(2, '0');
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -150,12 +146,18 @@ function decorate(block) {
     }
 
     // Calculate the average Customer Facing Target Achievement % and total Gap to Target up to the current week
-    const totalAchievementPercent = weeks.reduce((acc, week) => {
-      if (week.isCurrentWeek) return acc; // Exclude current week from calculation
-      return acc + week.customerFacingTargetAchievementPercent;
-    }, 0);
-    const averageAchievementPercent = totalAchievementPercent / (currentWeekNumber - 1); // Exclude current week
-    console.log(weeks);
+    let totalAchievementPercent = 0;
+    let processedWeeks = 0;
+
+    for (const week of weeks) {
+      if (week.isCurrentWeek) break; // Stop calculations when current week is reached
+      totalAchievementPercent += week.customerFacingTargetAchievementPercent;
+      processedWeeks++;
+    }
+
+    const averageAchievementPercent = processedWeeks > 0 ? totalAchievementPercent / processedWeeks : 0; // Avoid division by zero
+    console.log(averageAchievementPercent);
+
     // Calculate total Gap to Target utilization
     let totalGapUtilization = 0;
     for (const week of weeks) {
@@ -181,9 +183,10 @@ function decorate(block) {
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
-    <h5>📅 Quarter Start Date: </h4><p></strong> ${formatDate(startDate)}</strong></p>
-    <h5>📅 Quarter End Date: </h4><p></strong> ${formatDate(endDate)}</strong></p>
-    <h5>🗓️ Current Week: </h4><p class="current-week"><strong> ${currentWeekNumber} : ${formatDate(today)}</strong></p>
+    <h5>📅 Quarter Start Date: </h5><p></strong> ${formatDate(startDate)}</strong></p>
+    <h5>📅 Quarter End Date: </h5><p></strong> ${formatDate(endDate)}</strong></p>
+    <h5>📅 Current Week: </h5><p></strong> ${currentWeekNumber}</strong></p>
+    <h5>🗓️ Today's Date: </h5><p><strong>${formatDate(today)}</strong></p>
   `;
 
   // Create input element for Customer Facing Target %
