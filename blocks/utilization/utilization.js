@@ -4,6 +4,8 @@ function decorate(block) {
   let startDateStr = '';
   let endDateStr = '';
   let holidaysStr = '';
+  let yearStr = '';
+  let quarterStr = '';
 
   // Validate and extract the required data
   paragraphs.forEach(paragraph => {
@@ -14,18 +16,30 @@ function decorate(block) {
       endDateStr = textContent.split(':')[1].trim();
     } else if (textContent.startsWith('Holiday-dates:')) {
       holidaysStr = textContent.split(':')[1].trim();
+    } else if (textContent.startsWith('Year:')) {
+      yearStr = textContent.split(':')[1].trim();
+    } else if (textContent.startsWith('Quarter:')) {
+      quarterStr = textContent.split(':')[1].trim();
     }
   });
 
   // Check if all required data is present
-  if (!startDateStr || !endDateStr || !holidaysStr) {
-    console.error('Missing required date information in the block content.');
+  if (!startDateStr || !endDateStr || !holidaysStr || !yearStr || !quarterStr) {
+    console.error('Missing required information in the block content.');
     return; // Exit the function if validation fails
   }
 
   const startDate = new Date(startDateStr);
   const endDate = new Date(endDateStr);
   const holidays = holidaysStr.split(',').map(dateStr => new Date(dateStr.trim()));
+  const yearValue = parseInt(yearStr, 10);
+  const quarterValue = quarterStr.toLowerCase(); // Normalize quarter value (e.g., "q2" -> "q2")
+
+  // Validate Year and Quarter
+  if (isNaN(yearValue) || !['q1', 'q2', 'q3', 'q4'].includes(quarterValue)) {
+    console.error('Invalid Year or Quarter value.');
+    return; // Exit the function if validation fails
+  }
 
   // Initialize Customer Facing Target %
   let customerFacingTargetPercent = parseFloat(localStorage.getItem('customerFacingTargetPercent')) || 87;
