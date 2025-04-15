@@ -1,8 +1,27 @@
 function decorate(block) {
   // Extract relevant data from block
-  const startDateStr = block.querySelector('p:nth-of-type(1)').textContent.split(':')[1].trim();
-  const endDateStr = block.querySelector('p:nth-of-type(2)').textContent.split(':')[1].trim();
-  const holidaysStr = block.querySelector('p:nth-of-type(3)').textContent.split(':')[1].trim(); // Extract holiday dates
+  const paragraphs = block.querySelectorAll('p');
+  let startDateStr = '';
+  let endDateStr = '';
+  let holidaysStr = '';
+
+  // Validate and extract the required data
+  paragraphs.forEach(paragraph => {
+    const textContent = paragraph.textContent.trim();
+    if (textContent.startsWith('Start-date:')) {
+      startDateStr = textContent.split(':')[1].trim();
+    } else if (textContent.startsWith('End-date:')) {
+      endDateStr = textContent.split(':')[1].trim();
+    } else if (textContent.startsWith('Holiday-dates:')) {
+      holidaysStr = textContent.split(':')[1].trim();
+    }
+  });
+
+  // Check if all required data is present
+  if (!startDateStr || !endDateStr || !holidaysStr) {
+    console.error('Missing required date information in the block content.');
+    return; // Exit the function if validation fails
+  }
 
   const startDate = new Date(startDateStr);
   const endDate = new Date(endDateStr);
