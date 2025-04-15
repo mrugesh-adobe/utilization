@@ -41,8 +41,11 @@ function decorate(block) {
     return; // Exit the function if validation fails
   }
 
+  // Update all localStorage keys to include yearValue and quarterValue as a prefix
+  const storagePrefix = `${yearValue}-${quarterValue.toUpperCase()}`;
+
   // Initialize Customer Facing Target %
-  let customerFacingTargetPercent = parseFloat(localStorage.getItem('customerFacingTargetPercent')) || 87;
+  let customerFacingTargetPercent = parseFloat(localStorage.getItem(`${storagePrefix}-customerFacingTargetPercent`)) || 87;
 
   // Calculate weeks between dates
   const weeks = [];
@@ -86,7 +89,8 @@ function decorate(block) {
     const holidayCount = holidays.filter(holiday => holiday >= startOfWeek && holiday <= endOfWeek).length;
     const hoursTarget = 40 - (holidayCount * 8);
 
-    const storedHours = parseFloat(localStorage.getItem(`week-${weekNumber}-customerFacingHours`)) || 0;
+    const storedHoursKey = `${storagePrefix}-week-${weekNumber}-customerFacingHours`;
+    const storedHours = parseFloat(localStorage.getItem(storedHoursKey)) || 0;
     const customerFacingHoursTarget = calculateHoursTarget(hoursTarget, customerFacingTargetPercent);
     const gapToTarget = storedHours - customerFacingHoursTarget;
 
@@ -138,7 +142,7 @@ function decorate(block) {
     }
   }
 
-  // Recalculate summary row values
+  // Update recalculateSummaryRow to use the new storage prefix
   function recalculateSummaryRow() {
     let totalWeeks = 0;
     let totalHours = 0;
@@ -259,9 +263,10 @@ function decorate(block) {
   inputWrapper.appendChild(label);
   inputWrapper.appendChild(inputTargetPercent);
 
+  // Update Customer Facing Target % input field
   inputTargetPercent.addEventListener('input', function () {
     customerFacingTargetPercent = parseFloat(this.value) || 87; // Default to 87 if input is invalid
-    localStorage.setItem('customerFacingTargetPercent', customerFacingTargetPercent); // Persist to localStorage
+    localStorage.setItem(`${storagePrefix}-customerFacingTargetPercent`, customerFacingTargetPercent); // Persist to localStorage
     weeks.forEach((week, index) => {
       week.customerFacingTargetPercent = customerFacingTargetPercent;
       week.customerFacingHoursTarget = calculateHoursTarget(week.availableHours, customerFacingTargetPercent);
@@ -318,7 +323,7 @@ function decorate(block) {
           inputHours.maxLength = 3; // Set max length
           inputHours.addEventListener('input', function () {
             week.customerFacingHours = parseFloat(this.value) || 0;
-            localStorage.setItem(`week-${week.weekNumber}-customerFacingHours`, week.customerFacingHours); // Persist to localStorage
+            localStorage.setItem(`${storagePrefix}-week-${week.weekNumber}-customerFacingHours`, week.customerFacingHours); // Persist to localStorage
             week.customerFacingTargetAchievementPercent = calculateAchievementPercent(week.customerFacingHours, week.availableHours, week.customerFacingTargetPercent);
             week.gapToTarget = week.customerFacingHours - week.customerFacingHoursTarget;
             updateCell(index, 'customerFacingTargetAchievementPercent', week.customerFacingTargetAchievementPercent);
