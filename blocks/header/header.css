@@ -232,6 +232,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections .default-content-wrapper > ul > li > ul {
     display: none;
     position: relative;
+    border: 1px solid rgba(0, 0, 0, .15);
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
@@ -240,9 +241,10 @@ header nav .nav-sections ul > li > ul > li {
     left: -24px;
     width: 200px;
     top: 150%;
-    padding: 16px;
     background-color: var(--light-color);
     white-space: initial;
+
+    
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
@@ -257,8 +259,15 @@ header nav .nav-sections ul > li > ul > li {
     border-bottom: 8px solid var(--light-color);
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-    padding: 8px 0;
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--dark-color);
+
+    &&:hover {
+      color: #1e2125;
+      background-color: #e9ecef;
+    }
   }
 }
 
