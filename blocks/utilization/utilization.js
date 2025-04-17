@@ -366,17 +366,21 @@ function decorate(block) {
     block.appendChild(inputWrapper);
     block.appendChild(table);
 
-    // Create and append holiday list
+    // Render holiday list dynamically
     const holidayListContainer = document.createElement('div');
     holidayListContainer.className = 'holiday-list-container';
-    holidayListContainer.innerHTML = '<h3>List of Holidays:</h3>';
-    const holidayList = document.createElement('ul');
-    holidays.forEach(holiday => {
-      const listItem = document.createElement('li');
-      listItem.textContent = formatDate(holiday);
-      holidayList.appendChild(listItem);
-    });
-    holidayListContainer.appendChild(holidayList);
+    holidayListContainer.innerHTML = `
+      <h3>📅 Holidays (${holidays.length})</h3>
+      <ul class="holiday-list">
+        ${holidays.map(holiday => {
+          const dayName = holiday.toLocaleDateString('en-US', { weekday: 'long' });
+          return `<li>
+            <span class="holiday-date">${formatToDate(holiday)}</span>
+            <span class="day">(${dayName})</span>
+          </li>`;
+        }).join('')}
+      </ul>
+    `;
     block.appendChild(holidayListContainer);
 
     recalculateSummaryRow(); // Initial calculation

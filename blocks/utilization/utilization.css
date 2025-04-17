@@ -50,23 +50,53 @@
 
 .utilization .holiday-list-container {
   margin-top: 20px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  max-width: 320px;
+  font-family: system-ui, sans-serif;
 }
 
 .utilization .holiday-list-container h3 {
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  margin: 0 0 10px 0;
+  color: #333;
 }
 
-.utilization .holiday-list-container ul {
+.utilization .holiday-list-container ul.holiday-list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
-.utilization .holiday-list-container ul li {
-  margin-bottom: 5px;
+.utilization .holiday-list-container ul.holiday-list li {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background-color: #f4f8fb;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.utilization .holiday-list-container ul.holiday-list li:hover {
+  background-color: #e6f1fb;
+}
+
+.holiday-date {
+  font-weight: 600;
+  color: #0056b3;
+  margin-right: 15px;
+}
+
+.day {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
 .utilization .green {
