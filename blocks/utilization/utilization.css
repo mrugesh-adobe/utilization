@@ -208,7 +208,7 @@
 .utilization .summary-target-achievement h5,
 .utilization .details-container h5 {
   display: inline-block;
-  width: 75%;
+  width: 49%;
   font-weight: 600;
   color: #333;
   margin-bottom: 4px;
@@ -217,7 +217,7 @@
 .utilization .summary-target-achievement p,
 .utilization .details-container p {
   display: inline-block;
-  width: 23%;
+  width: 49%;
   text-align: right;
   font-weight: 700;
   color: #1e88e5;
@@ -261,6 +261,10 @@ th:nth-child(8), td:nth-child(8) { /* Available Hours */
 .utilization th:nth-child(5)::after,
 .utilization td:nth-child(5)::after { /* Fifth column */
   content: ' %';
+}
+
+.utilization .black {
+  color: #000;
 }
 
 @media (max-width: 480px) {

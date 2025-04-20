@@ -195,7 +195,6 @@ function decorate(block) {
     // Calculate total Gap to Target utilization
     let totalGapUtilization = 0;
     for (const week of weeks) {
-      if (week.isCurrentWeek) break; // Stop summing when current week is reached
       totalGapUtilization += week.gapToTarget;
     }
 
@@ -206,7 +205,7 @@ function decorate(block) {
     const summarySection = document.querySelector('.summary-target-achievement');
     if (summarySection) {
       summarySection.innerHTML = `
-        <h4>Progress Summary</h4>
+        <h4>${quarterStr.toUpperCase()} Summary</h4>
         <h5>📈 Target Achievement:</h5>
         <p class="summary-achievement-value">${achievementPercent}%</p>
         <h5>📊 Gap Utilization:</h5>
@@ -223,9 +222,8 @@ function decorate(block) {
   const detailsContainer = document.createElement('div');
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
-  <h4>Qaurter Details</h4>
-    <h5>📅 Quarter Start Date: </h5><p></strong> ${formatDate(startDate)}</strong></p>
-    <h5>📅 Quarter End Date: </h5><p></strong> ${formatDate(endDate)}</strong></p>
+  <h4>${quarterStr.toUpperCase()} Details</h4>
+    <h5>📅 Quarter Start Date: </h5><p></strong> ${formatDate(startDate)} <span class="black">TO</span> ${formatDate(endDate)}</strong></p>
     <h5>🔢 Current Week: </h5><p></strong> ${currentWeekNumber} </strong></p>
     <h5>📍 Today's Date: </h5><p><strong>${formatDate(today)}</strong></p>
   `;
