@@ -288,7 +288,7 @@ function decorate(block) {
     
     // Main header row
     const headerRow = document.createElement('tr');
-    ['Week Number', 'Week Date Range', 'Customer Facing Target %', 'Customer Facing Hours', 'Customer Facing Achievement %', 'Gap to Target', 'Customer Facing Hours Target', 'Available Hours'].forEach(header => {
+    ['Week Number', 'Week Date Range', 'Customer Facing Target', 'Customer Facing Hours', 'Customer Facing Achievement', 'Gap to Target', 'Customer Facing Hours Target', 'Available Hours'].forEach(header => {
       const th = document.createElement('th');
       th.textContent = header;
       headerRow.appendChild(th);

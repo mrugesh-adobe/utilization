@@ -256,6 +256,13 @@ th:nth-child(8), td:nth-child(8) { /* Available Hours */
   width: 130px;
 }
 
+.utilization td:nth-child(3)::after,
+.utilization th:nth-child(3)::after, /* Third column */
+.utilization th:nth-child(5)::after,
+.utilization td:nth-child(5)::after { /* Fifth column */
+  content: ' %';
+}
+
 @media (max-width: 480px) {
   .utilization .summary-target-achievement h5,
   .utilization .summary-target-achievement p,
