@@ -192,9 +192,6 @@ function decorate(block) {
       processedWeeks++;
     }
 
-    const averageAchievementPercent = processedWeeks > 0 ? totalAchievementPercent / processedWeeks : 0; // Avoid division by zero
-    console.log(averageAchievementPercent);
-
     // Calculate total Gap to Target utilization
     let totalGapUtilization = 0;
     for (const week of weeks) {
@@ -203,27 +200,18 @@ function decorate(block) {
     }
 
     // Calculate weeks left in the quarter
-    const weeksLeftInQuarter = weeks.length - currentWeekNumber + 1;
+    const weeksLeftInQuarter = weeks.filter(week => week.endOfWeek >= today).length;
 
     // Update summary section for To Date Target Achievement
     const summarySection = document.querySelector('.summary-target-achievement');
     if (summarySection) {
-      const toDateStart = formatToDate(startDate); // Start of the date range
-      console.log(currentWeek.startOfWeek)
-      const toDateEnd = formatToDate(currentWeek ? currentWeek.endOfWeek : today); // End of the date range (current week or today)
-      // currentWeek.startOfWeek - 1 day i need
-      const previousDate = new Date(currentWeek.startOfWeek);
-      previousDate.setDate(previousDate.getDate() - 1); // Subtract 1 day
-      const previousDateStr = formatToDate(previousDate); // Format the date
       summarySection.innerHTML = `
         <h4>Progress Summary</h4>
-        <h5>📅 To Date:</h5><p><strong>${toDateStart} → ${previousDateStr}</strong></p>
-        <h5>📈 To Date Target Achievement:</h5>
-        <p class="summary-achievement-value">${Math.round(averageAchievementPercent)}%</p>
-        
-        <h5>⏳ To Date Gap Utilization:</h5>
+        <h5>📈 Target Achievement:</h5>
+        <p class="summary-achievement-value">${achievementPercent}%</p>
+        <h5>📊 Gap Utilization:</h5>
         <p class="summary-gap-value">${totalGapUtilization} Hours</p>
-        <h5>📊 Weeks Left in Quarter:</h5>
+        <h5>📅 Weeks Left in Quarter:</h5>
         <p class="summary-weeks-left-value">${weeksLeftInQuarter}</p>
       `;
     }
@@ -354,9 +342,9 @@ function decorate(block) {
     const summarySection = document.createElement('div');
     summarySection.className = 'summary-target-achievement';
     summarySection.innerHTML = `
-      <h5>📈 To Date Target Achievement:</h4>
+      <h5>📈 Target Achievement:</h4>
       <p class="summary-achievement-value">0%</p>
-      <h5>📊 To Date Gap Utilization:</h4>
+      <h5>📊 Gap Utilization:</h4>
       <p class="summary-gap-value">0 Hours</p>
       <h5>📅 Weeks Left in Quarter:</h4>
       <p class="summary-weeks-left-value">0</p>
