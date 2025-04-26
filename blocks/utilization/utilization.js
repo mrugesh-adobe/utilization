@@ -117,10 +117,34 @@ function decorate(block) {
     return Math.round(availableHours * (percent / 100));
   }
 
-  // Calculate Customer Facing Target Achievement %
+  // Calculate Customer Facing Achievement %
   function calculateAchievementPercent(hours, target, percent) {
     const effectiveTarget = target * (percent / 100);
     return Math.round((hours / effectiveTarget) * 100);
+  }
+
+  // Add a new function to calculate achievement percentage and gap up to the current date
+  function calculateAchievementAndGapToDate() {
+    let totalHoursToDate = 0;
+    let totalTargetHoursToDate = 0;
+    let totalGapToDate = 0;
+
+    weeks.forEach(week => {
+      if (week.endOfWeek <= today) { // Only include weeks up to the current date
+        totalHoursToDate += week.customerFacingHours;
+        totalTargetHoursToDate += week.customerFacingHoursTarget;
+        totalGapToDate += week.gapToTarget;
+      }
+    });
+
+    const achievementPercentToDate = totalTargetHoursToDate > 0
+      ? Math.round((totalHoursToDate / totalTargetHoursToDate) * 100)
+      : 0;
+
+    return {
+      achievementPercentToDate,
+      totalGapToDate
+    };
   }
 
   // Update a specific cell in the table
@@ -142,7 +166,7 @@ function decorate(block) {
     }
   }
 
-  // Update recalculateSummaryRow to use the new storage prefix
+  // Update recalculateSummaryRow to include the new calculation
   function recalculateSummaryRow() {
     let totalWeeks = 0;
     let totalHours = 0;
@@ -182,7 +206,7 @@ function decorate(block) {
       summaryRow.querySelector('.summary-availableHours').textContent = totalAvailableHours;
     }
 
-    // Calculate the average Customer Facing Target Achievement % and total Gap to Target up to the current week
+    // Calculate the average Customer Facing Achievement % and total Gap to Target up to the current week
     let totalAchievementPercent = 0;
     let processedWeeks = 0;
 
@@ -201,21 +225,36 @@ function decorate(block) {
     // Calculate weeks left in the quarter
     const weeksLeftInQuarter = weeks.filter(week => week.endOfWeek >= today).length;
 
-    // Update summary section for To Date Target Achievement
+    // Calculate achievement and gap up to the current date
+    const { achievementPercentToDate, totalGapToDate } = calculateAchievementAndGapToDate();
+
+    // Update summary section for To Date Achievement
     const summarySection = document.querySelector('.summary-target-achievement');
-    if (summarySection) {
+    
+    if (currentWeek) {
+      const { achievementPercentToDate, totalGapToDate } = calculateAchievementAndGapToDate();
       summarySection.innerHTML = `
         <h4>${quarterStr.toUpperCase()} Summary</h4>
-        <h5>📈 Target Achievement:</h5>
+        <h5>📈 Achievement (To Date):</h5>
+        <p class="summary-achievement-value">${achievementPercentToDate}%</p>
+        <h5>📊 Gap Utilization (To Date):</h5>
+        <p class="summary-gap-value">${totalGapToDate} Hours</p>
+        <h5>📅 Weeks Left in Quarter:</h5>
+        <p class="summary-weeks-left-value">${weeks.filter(week => week.endOfWeek >= today).length}</p>
+      `;
+    } else {
+      summarySection.innerHTML = `
+        <h4>${quarterStr.toUpperCase()} Summary</h4>
+        <h5>📈 Achievement:</h5>
         <p class="summary-achievement-value">${achievementPercent}%</p>
         <h5>📊 Gap Utilization:</h5>
-        <p class="summary-gap-value">${totalGapUtilization} Hours</p>
+        <p class="summary-gap-value">${totalGaps} Hours</p>
         <h5>📅 Weeks Left in Quarter:</h5>
-        <p class="summary-weeks-left-value">${weeksLeftInQuarter}</p>
+        <p class="summary-weeks-left-value">${weeks.filter(week => week.endOfWeek >= today).length}</p>
       `;
     }
   }
-  
+
   // Create container for details
   const currentWeek = weeks.find(week => week.isCurrentWeek);
   const currentWeekNumber = currentWeek ? currentWeek.weekNumber : weeks.length; // Fallback to last week if not found
@@ -336,11 +375,11 @@ function decorate(block) {
     table.appendChild(tbody);
     block.innerHTML = '';
     
-    // Create summary section for To Date Target Achievement and Gap Utilization
+    // Create summary section for To Date Achievement and Gap Utilization
     const summarySection = document.createElement('div');
     summarySection.className = 'summary-target-achievement';
     summarySection.innerHTML = `
-      <h5>📈 Target Achievement:</h4>
+      <h5>📈 Achievement:</h4>
       <p class="summary-achievement-value">0%</p>
       <h5>📊 Gap Utilization:</h4>
       <p class="summary-gap-value">0 Hours</p>
