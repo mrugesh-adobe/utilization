@@ -262,7 +262,7 @@ function decorate(block) {
   detailsContainer.className = 'details-container';
   detailsContainer.innerHTML = `
   <h4>${quarterStr.toUpperCase()} Details</h4>
-    <h5>📅 Quarter Start Date: </h5><p></strong> ${formatDate(startDate)} <span class="black">TO</span> ${formatDate(endDate)}</strong></p>
+    <h5>📅 Quarter: </h5><p></strong> ${formatDate(startDate)} <span class="black">TO</span> ${formatDate(endDate)}</strong></p>
     <h5>🔢 Current Week: </h5><p></strong> ${currentWeekNumber} </strong></p>
     <h5>📍 Today's Date: </h5><p><strong>${formatDate(today)}</strong></p>
   `;
