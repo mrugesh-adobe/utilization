@@ -1,6 +1,6 @@
 /* header and nav layout */
 header .nav-wrapper {
-  background-color: var(--background-color);
+  background-color: #f4f4f4;
   width: 100%;
   z-index: 2;
   position: fixed;
@@ -42,6 +42,7 @@ header nav[aria-expanded='true'] {
   header nav[aria-expanded='true'] {
     min-height: 0;
     overflow: visible;
+    max-width: 1200px;
   }
 }
 
