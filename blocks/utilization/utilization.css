@@ -115,7 +115,7 @@
 }
 
 .utilization thead tr.summary-row {
-  top: 65px; /* height of first header row */
+  top: 57px; /* height of first header row */
   background: #e0e0e0;
   font-weight: bold;
   z-index: 1;
